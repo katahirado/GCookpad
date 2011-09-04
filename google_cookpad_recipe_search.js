@@ -247,6 +247,7 @@
             bookmarkWin.style.display="block";
             overlayAnchor.className = "close_overlay";
             overlayAnchor.style.height = doc.body.clientHeight + "px";
+            bookmarkForm.style.top=win.innerHeight/2+doc.body.scrollTop+"px";
             bookmarkForm.className = "bookmark_form";
             bookmarkTitle.value = that.title;
             bookmarkURL.value = that.href;

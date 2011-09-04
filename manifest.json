@@ -1,6 +1,6 @@
 {
     "name": "GCookpad",
-    "version": "0.4.1",
+    "version": "0.4.2",
     "description": "GCookpadは、COOKPADの人気レシピをひとつの画面でかんたんに検索できるツールです。",
     "icons": {
         "16": "cookpad_search_16.png",
