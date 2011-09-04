@@ -243,7 +243,6 @@
             clearFix.className = "float_clear_fix";
             clearFix2.className = "float_clear_fix";
             bookmarkWin.className = "modal_open";
-            bookmarkWin.style.height = doc.body.clientHeight + "px";
             bookmarkWin.style.display="block";
             overlayAnchor.className = "close_overlay";
             overlayAnchor.style.height = doc.body.clientHeight + "px";
