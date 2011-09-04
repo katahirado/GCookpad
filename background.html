@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>bookmarkOperation</title>
+    </head>
+    <body>
+        <script>
+            (function() {
+                var folders = [];
+                //ブックマークツリー全体を取得し、フォルダーのみをcontentscriptに返す
+                function getAllBookmarks(callback) {
+                    chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
+                        folders = [];
+                        findFolder(bookmarkTreeNodes[0].children);
+                        for(var j = 0, len = folders.length; j < len; j++) {
+                            var folder = folders[j];
+                            folder.ancestorCount = getAncestorCount(folder.parentId);
+                        }
+                        callback(folders);
+                    });
+                }
+
+                //再帰的にブックマークツリーをたどり、フォルダーのみを抽出する
+                function findFolder(bookmarkNodes) {
+                    for(var i = 0, len = bookmarkNodes.length; i < len; i++) {
+                        var bookmarkTreeNode = bookmarkNodes[i];
+                        if(!bookmarkTreeNode.url) {
+                            bookmarkTreeNode.hoge = 'hoge';
+                            folders.push(bookmarkTreeNode);
+                            if(bookmarkTreeNode.children) {
+                                findFolder(bookmarkTreeNode.children);
+                            }
+                        }
+                    }
+                }
+
+                //ブックマークフォルダの深度を得る
+                function getAncestorCount(parentId) {
+                    var count = 0;
+                    while(parentId) {
+                        for(var k = 0, len = folders.length; k < len; k++) {
+                            var folder = folders[k];
+                            if(parentId == "0") {
+                                parentId = null;
+                                break;
+                            } else if(folder.id == parentId) {
+                                count += 1;
+                                parentId = folder.parentId;
+                                break;
+                            }
+                        }
+                    }
+                    return count;
+                }
+
+                function bookmarking(bookmarkObject, callback) {
+                    chrome.bookmarks.create(bookmarkObject, function(bookmarkTreeNode) {
+                        callback(bookmarkTreeNode);
+                    });
+                }
+
+                //呼び出しメソッドの振り分け
+                function onRequest(request, sender, callback) {
+                    switch(request.action) {
+                        case "getAllBookmarks":
+                            getAllBookmarks(callback);
+                            break;
+                        case "bookmarking":
+                            bookmarking(request.bookmarkObject, callback);
+                            break;
+                    }
+                }
+
+                //register
+                chrome.extension.onRequest.addListener(onRequest);
+            })();
+
+        </script>
+    </body>
+</html>

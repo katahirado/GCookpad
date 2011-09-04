@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+            body {
+                background-image: url(cookpad_search_48.png);
+                background-repeat: no-repeat;
+                background-position: right bottom;
+                font-size: 0.8em;
+                font: "Lucida Grande", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", Helvetica, Arial, Verdana, sans-serif;
+                color: #222222;
+                line-height: 200%;
+            }
+            a, a:visited {
+                text-transform: none;
+                color: #222222;
+                text-decoration: underline;
+                line-height: 200%;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            #search {
+                margin-top: 10px;
+            }
+            #chkbox {
+                margin-top: 10px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <input type="search" id="keyword" size="40" />
+        <input type="submit" id="search" value="検索" />
+        <input type="checkbox" id="chkbox" value="1"/>
+        人気検索
+        <input type="checkbox" id="chkbox2" value="1"/>
+        1位
+        <br/>
+        <a href="http://katahirado.jp/soft.html">GCOOKPAD by katahirado</a>
+        <script>
+            (function(win) {
+                var doc = win.document;
+                var googleURL = "http://www.google.co.jp/search?q=";
+                var cookpad = "+site%3Acookpad.com";
+                var popular = "人気検索";
+                var numOne = "1位";
+                var anchors = doc.getElementsByTagName("a");
+                for(var i = 0, len = anchors.length; i < len; i++) {
+                    var anchor = anchors[i];
+                    anchor.addEventListener("click", function(event) {
+                        chrome.tabs.create({
+                            url : this.href
+                        });
+                        return false;
+                    }, false);
+                }
+                var keyword = doc.getElementById("keyword");
+                keyword.focus();
+                keyword.addEventListener("keydown", function(event) {
+                    if(keyword.value == "") {
+                        return;
+                    }
+                    if(event.keyCode == 13) {
+                        createGoogleTab();
+                    }
+                }, false);
+                var search = doc.getElementById("search");
+                search.addEventListener("click", function(event) {
+                    if(keyword.value == "") {
+                        return;
+                    }
+                    createGoogleTab();
+                }, false);
+                function createGoogleTab() {
+                    var urlString = googleURL + encodeURI(keyword.value) + cookpad;
+                    if(doc.getElementById("chkbox").checked) {
+                        urlString += '+' + encodeURI(popular);
+                    }
+                    if(doc.getElementById("chkbox2").checked) {
+                        urlString += "+" + encodeURI(numOne);
+                    }
+                    chrome.tabs.create({
+                        url : urlString
+                    });
+                    win.close();
+                }
+
+            })(window);
+
+        </script>
+    </body>
+</html>

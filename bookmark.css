@@ -1,0 +1,76 @@
+#bookmark_modal{
+    display:none;
+}
+.close_overlay {
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: block;
+    text-indent: -9999px;
+    position: absolute;
+    background: #000;
+    opacity: 0.5;
+    z-index: 1010;
+}
+.bookmark_form {
+    top: 50%;
+    left: 50%;
+    margin: -55px 0 0 -200px;
+    width: 400px;
+    height: 110px;
+    line-height:1.5;
+    text-align: center;
+    display: block;
+    background: #fff;
+    border-radius: 7px;
+    position: absolute;
+    -webkit-box-shadow: 0 3px 20px rgba(0,0,0,0.9);
+    z-index: 1020;
+}
+#bookmark_close_link {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: transparent;
+}
+#bookmark_close_link:focus {
+    outline: none;
+}
+#bookmark_close_link:after {
+    content: 'X';
+    display: block;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1.5em;
+    padding: 1px 1px 1px 2px;
+    text-decoration: none;
+    text-shadow: none;
+    text-align: center;
+    font-weight: bold;
+    background: #000;
+    color: #fff;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.bookmark_label {
+    display: block;
+    text-align: right;
+    width: 60px;
+    float: left;
+}
+@-webkit-keyframes fadeIn {
+0% {opacity:0;display: block;}
+100% {opacity: 1;}
+}
+.modal_open {
+    -webkit-animation-name: fadeIn;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 1;
+    opacity: 1;
+    display: block;
+}
+.float_clear_fix {
+  clear: both;
+}

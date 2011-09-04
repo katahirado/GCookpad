@@ -1,0 +1,25 @@
+{
+    "name": "GCookpad",
+    "version": "0.4.1",
+    "description": "GCookpadは、COOKPADの人気レシピをひとつの画面でかんたんに検索できるツールです。",
+    "icons": {
+        "16": "cookpad_search_16.png",
+        "48": "cookpad_search_48.png",
+        "128": "cookpad_search_128.png"
+    },
+    "background_page": "background.html",
+    "browser_action": {
+        "default_icon": "cookpad_search_16.png",
+        "default_title": "GCookpad",
+        "popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["http://www.google.com/*", "http://www.google.co.jp/*"],
+            "css":["bookmark.css"],
+            "js": ["google_cookpad_recipe_search.js"],
+            "run_at": "document_end"
+        }
+    ],
+    "permissions": ["tabs","bookmarks"]
+}
