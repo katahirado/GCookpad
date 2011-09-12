@@ -28,6 +28,7 @@
         } else {
             iframe.width = 670;
         }
+        iframe.height = sr.offsetHeight;
     }
 
     function moveIframe() {
@@ -93,7 +94,7 @@
         overlayAnchor.className = "";
         bookmarkForm.className = "";
         bookmarkWin.className = "";
-        bookmarkWin.style.display="none";
+        bookmarkWin.style.display = "none";
     }
 
     //ブックマーク追加
@@ -205,8 +206,16 @@
         var links = doc.querySelectorAll('h3 > a.l');
         for(var i = 0 + startIndex, len = links.length; i < len; i++) {
             var link = links[i];
-            //クリックイベントをキャンセルしてiframeのソースにhrefをセットする
-            link.addEventListener('click', clickOpenIFrameHandler);
+            //インスタント検索にもっていかれてページ遷移してしまうので、元のanchorを非表示にして
+            //新たにanchorを作成する。
+            var newLink = doc.createElement('a');
+            newLink.href = link.href;
+            var t = link.innerText;
+            newLink.innerText = t;
+            newLink.addEventListener('click', clickOpenIFrameHandler);
+            link.parentNode.appendChild(newLink);
+            link.style.display = "none";
+
             //プレビュー表示の虫眼鏡を消す
             var vspib = link.parentNode.parentNode.querySelector('.vspib');
             if(vspib) {
@@ -243,10 +252,10 @@
             clearFix.className = "float_clear_fix";
             clearFix2.className = "float_clear_fix";
             bookmarkWin.className = "modal_open";
-            bookmarkWin.style.display="block";
+            bookmarkWin.style.display = "block";
             overlayAnchor.className = "close_overlay";
             overlayAnchor.style.height = doc.body.clientHeight + "px";
-            bookmarkForm.style.top=win.innerHeight/2+doc.body.scrollTop+"px";
+            bookmarkForm.style.top = win.innerHeight / 2 + doc.body.scrollTop + "px";
             bookmarkForm.className = "bookmark_form";
             bookmarkTitle.value = that.title;
             bookmarkURL.value = that.href;
@@ -273,6 +282,7 @@
         return s + node.title;
     }
 
+    //クリックイベントをキャンセルしてiframeのソースにhrefをセットする
     function clickOpenIFrameHandler(event) {
         event.preventDefault();
         iframe.src = this.href;
