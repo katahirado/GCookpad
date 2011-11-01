@@ -236,11 +236,11 @@
             bmAnchor.style.marginLeft = "5px";
             bmAnchor.addEventListener('click', bookmarkWindowOpen);
             secondDiv.appendChild(bmAnchor);
+            
             var tsukurepoSpan = doc.createElement('span');
             tsukurepoSpan.id = "tsukurepoSpan" + i;
             tsukurepoSpan.style.marginLeft = "5px";
             secondDiv.appendChild(tsukurepoSpan);
-            var locali = i;
             //つくれぽ件数を取得する
             var recipeMatch = link.href.match(/cookpad.com\/recipe/);
             if(recipeMatch) {
@@ -254,7 +254,14 @@
                     span.innerHTML = "つくれぽ<em>" + response.count + "</em>件<em>" + response.uuCount+"</em>";
                 });
             }
-
+            //はてぶ
+            var hatebuAnchor=doc.createElement('a');
+            hatebuAnchor.style.marginLeft='5px';
+            var encodeRecipeURL=link.href.replace(/#/,'%23');
+            hatebuAnchor.href='http://b.hatena.ne.jp/entry/'+encodeRecipeURL;
+            hatebuAnchor.innerHTML='<img src="http://b.hatena.ne.jp/entry/image/'+encodeRecipeURL+'">';
+            secondDiv.appendChild(hatebuAnchor);
+            
             link.parentElement.parentElement.parentElement.appendChild(secondDiv);
 
             //descriptionを作成する
