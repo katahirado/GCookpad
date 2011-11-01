@@ -239,7 +239,6 @@
             var tsukurepoSpan = doc.createElement('span');
             tsukurepoSpan.id = "tsukurepoSpan" + i;
             tsukurepoSpan.style.marginLeft = "5px";
-            // tsukurepoSpan.innerText='hoge';
             secondDiv.appendChild(tsukurepoSpan);
             var locali = i;
             //つくれぽ件数を取得する
@@ -252,7 +251,7 @@
                 }, function(response) {
                     //つくれぽ件数表示用span
                     var span = doc.getElementById('tsukurepoSpan' + response.spanPosition);
-                    span.innerHTML = "つくれぽ <em>" + response.count + "</em> 件<em>" + response.uuCount+"</em>";
+                    span.innerHTML = "つくれぽ<em>" + response.count + "</em>件<em>" + response.uuCount+"</em>";
                 });
             }
 
