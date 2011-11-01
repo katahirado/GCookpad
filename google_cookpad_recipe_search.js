@@ -207,19 +207,19 @@
         for(var i = 0 + startIndex, len = links.length; i < len; i++) {
             var link = links[i];
             //インスタント検索にもっていかれてページ遷移してしまうので、元の表示をすべて非表示にしてanchor,description等を作成する
-            link.parentElement.parentElement.style.display="none";
-            
+            link.parentElement.parentElement.style.display = "none";
+
             //新たにanchorを作成する。
             var newLink = doc.createElement('a');
             newLink.href = link.href;
             var t = link.innerText;
             newLink.innerText = t;
-            newLink.style.fontSize="medium";
+            newLink.style.fontSize = "medium";
             newLink.addEventListener('click', clickOpenIFrameHandler);
             link.parentElement.parentElement.parentElement.appendChild(newLink);
 
             //二段目のdivを作成
-            var secondDiv=doc.createElement('div');
+            var secondDiv = doc.createElement('div');
             //新たに開く用にanchorを作成する
             var anchor = doc.createElement('a');
             anchor.href = link.href;
@@ -227,7 +227,7 @@
             anchor.style.marginLeft = "5px";
             anchor.innerText = "新しく開く";
             secondDiv.appendChild(anchor);
-            
+
             //bookmarkリンク作成
             var bmAnchor = doc.createElement('a');
             bmAnchor.innerText = "ブックマーク";
@@ -235,15 +235,35 @@
             bmAnchor.title = link.innerText;
             bmAnchor.style.marginLeft = "5px";
             bmAnchor.addEventListener('click', bookmarkWindowOpen);
-            
             secondDiv.appendChild(bmAnchor);
+            var tsukurepoSpan = doc.createElement('span');
+            tsukurepoSpan.id = "tsukurepoSpan" + i;
+            tsukurepoSpan.style.marginLeft = "5px";
+            // tsukurepoSpan.innerText='hoge';
+            secondDiv.appendChild(tsukurepoSpan);
+            var locali = i;
+            //つくれぽ件数を取得する
+            var recipeMatch = link.href.match(/cookpad.com\/recipe/);
+            if(recipeMatch) {
+                chrome.extension.sendRequest({
+                    "action" : "getCookpadTsukurepo",
+                    "recipeURL" : link.href,
+                    "spanPosition" : i
+                }, function(response) {
+                    //つくれぽ件数表示用span
+                    var span = doc.getElementById('tsukurepoSpan' + response.spanPosition);
+                    span.innerHTML = "つくれぽ <em>" + response.count + "</em> 件<em>" + response.uuCount+"</em>";
+                });
+            }
+
             link.parentElement.parentElement.parentElement.appendChild(secondDiv);
-            
+
             //descriptionを作成する
-            var description=link.parentElement.parentElement.querySelector('.st').innerHTML;
-            var descriptionDiv=doc.createElement('div');
-            descriptionDiv.innerHTML=description;
+            var description = link.parentElement.parentElement.querySelector('.st').innerHTML;
+            var descriptionDiv = doc.createElement('div');
+            descriptionDiv.innerHTML = description;
             link.parentElement.parentElement.parentElement.appendChild(descriptionDiv);
+
         }
         startIndex = links.length;
     }

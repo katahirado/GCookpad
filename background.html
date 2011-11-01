@@ -60,6 +60,27 @@
                     });
                 }
 
+                function getCookpadTsukurepo(recipeURL, spanPosition, callback) {
+                    // function getCookpadTsukurepo(sp,callback) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function() {
+                        //つくれぽ件数を抜き出す
+                        var recipePage = xhr.responseText;
+                        var tsukurepoMatch = recipePage.match(/<span class=\"tsukurepo_count\">([0-9]{1,})<\/span>/);
+                        var tsukurepoUUMatch= recipePage.match(/<span class=\"tsukurepo_uu_count\">(.+)<\/span>/);
+                        if(tsukurepoMatch) {
+                            var result = {
+                                'count' : tsukurepoMatch[1],
+                                'uuCount': tsukurepoUUMatch[1],
+                                'spanPosition' : spanPosition
+                            };
+                            callback(result);
+                        }
+                    }
+                    xhr.open('GET', recipeURL, true);
+                    xhr.send(null);
+                }
+
                 //呼び出しメソッドの振り分け
                 function onRequest(request, sender, callback) {
                     switch(request.action) {
@@ -68,6 +89,9 @@
                             break;
                         case "bookmarking":
                             bookmarking(request.bookmarkObject, callback);
+                            break;
+                        case "getCookpadTsukurepo":
+                            getCookpadTsukurepo(request.recipeURL, request.spanPosition, callback);
                             break;
                     }
                 }
