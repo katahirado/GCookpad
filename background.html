@@ -26,7 +26,6 @@
                     for(var i = 0, len = bookmarkNodes.length; i < len; i++) {
                         var bookmarkTreeNode = bookmarkNodes[i];
                         if(!bookmarkTreeNode.url) {
-                            bookmarkTreeNode.hoge = 'hoge';
                             folders.push(bookmarkTreeNode);
                             if(bookmarkTreeNode.children) {
                                 findFolder(bookmarkTreeNode.children);
