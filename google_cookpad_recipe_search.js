@@ -279,7 +279,7 @@
         event.preventDefault();
         var that = this;
         chrome.extension.sendRequest({
-            "action" : "getAllBookmarks"
+            "action" : "getAllBookmarkFolders"
         }, function(data) {
             titleLabel.className = "bookmark_label";
             folderLabel.className = "bookmark_label";
