@@ -9,6 +9,29 @@
             (function() {
                 var folders = [];
                 var bookmarks=[];
+                //ブックマークツリー全体を取得し、平滑化してcontentscriptに返す
+                function getAllBookmarks(callback) {
+                    chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
+                        bookmarks = [];
+                        findBookmark(bookmarkTreeNodes[0].children);
+                        callback(bookmarks);
+                    });
+                }
+                
+                //再帰的にブックマークツリーをたどり、ブックマークのみを抽出する
+                function findBookmark(bookmarkNodes) {
+                    for(var i = 0, len = bookmarkNodes.length; i < len; i++) {
+                        var bookmarkTreeNode = bookmarkNodes[i];
+                        if(!bookmarkTreeNode.url) {
+                            if(bookmarkTreeNode.children) {
+                                findBookmark(bookmarkTreeNode.children);
+                            }
+                        }else {
+                            bookmarks.push(bookmarkTreeNode);
+                        }
+                    }
+                }
+                
                 //ブックマークツリー全体を取得し、フォルダーのみをcontentscriptに返す
                 function getAllBookmarkFolders(callback) {
                     chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
@@ -87,6 +110,9 @@
                 //呼び出しメソッドの振り分け
                 function onRequest(request, sender, callback) {
                     switch(request.action) {
+                        case "getAllBookmarks":
+                            getAllBookmarks(callback);
+                            break;
                         case "getAllBookmarkFolders":
                             getAllBookmarkFolders(callback);
                             break;

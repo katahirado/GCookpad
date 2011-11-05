@@ -4,6 +4,7 @@
     if(!match) {
         return;
     }
+
     var doc = win.document;
     win.addEventListener("scroll", scrollHandler);
     win.addEventListener("resize", resizeHandler);
@@ -33,9 +34,12 @@
 
     function moveIframe() {
         iframe.style.position = "fixed";
-        linkeventFook();
+        initGCookpad();
     }
 
+    //bookmark一覧を保持する
+    var bookmarks = [];
+    
     //bookmark登録用UIを用意
     var bookmarkWin = doc.createElement('div');
     bookmarkWin.id = "bookmark_modal";
@@ -111,6 +115,16 @@
                 "url" : bookmarkURL.value
             }
         }, function(data) {
+            bookmarks.push(data);
+            //urlで走査して✓を追加する
+            var xpathString='//a[@class="bookmarkLink" and @href="'+data.url+'"]';
+            var bookmarkLinks=doc.evaluate(xpathString,doc.body,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null);
+            for (var i=0,len=bookmarkLinks.snapshotLength; i < len; i++) {
+                var bmLink=bookmarkLinks.snapshotItem(i);
+                if(bmLink.nextSibling.nodeValue!="✓"){
+                    bmLink.parentElement.insertBefore(doc.createTextNode("✓"),bmLink.nextSibling);
+                };
+            };
             overlayErase();
         });
     }
@@ -231,12 +245,21 @@
             //bookmarkリンク作成
             var bmAnchor = doc.createElement('a');
             bmAnchor.innerText = "ブックマーク";
+            bmAnchor.className="bookmarkLink";
             bmAnchor.href = link.href;
             bmAnchor.title = link.innerText;
             bmAnchor.style.marginLeft = "5px";
             bmAnchor.addEventListener('click', bookmarkWindowOpen);
             secondDiv.appendChild(bmAnchor);
-            
+            //ブックマーク済みかチェックする
+            var bool = bookmarks.some(function(elem, idx, array) {
+                return elem.url == link.href;
+            });
+            if(bool) {
+                var checkMarkString = doc.createTextNode("✓");
+                //ブックマーク済みなら✓をつける
+                secondDiv.appendChild(checkMarkString);
+            }
             var tsukurepoSpan = doc.createElement('span');
             tsukurepoSpan.id = "tsukurepoSpan" + i;
             tsukurepoSpan.style.marginLeft = "5px";
@@ -251,17 +274,17 @@
                 }, function(response) {
                     //つくれぽ件数表示用span
                     var span = doc.getElementById('tsukurepoSpan' + response.spanPosition);
-                    span.innerHTML = "つくれぽ<em>" + response.count + "</em>件<em>" + response.uuCount+"</em>";
+                    span.innerHTML = "つくれぽ<em>" + response.count + "</em>件<em>" + response.uuCount + "</em>";
                 });
             }
             //はてぶ
-            var hatebuAnchor=doc.createElement('a');
-            hatebuAnchor.style.marginLeft='5px';
-            var encodeRecipeURL=link.href.replace(/#/,'%23');
-            hatebuAnchor.href='http://b.hatena.ne.jp/entry/'+encodeRecipeURL;
-            hatebuAnchor.innerHTML='<img src="http://b.hatena.ne.jp/entry/image/'+encodeRecipeURL+'">';
+            var hatebuAnchor = doc.createElement('a');
+            hatebuAnchor.style.marginLeft = '5px';
+            var encodeRecipeURL = link.href.replace(/#/, '%23');
+            hatebuAnchor.href = 'http://b.hatena.ne.jp/entry/' + encodeRecipeURL;
+            hatebuAnchor.innerHTML = '<img src="http://b.hatena.ne.jp/entry/image/' + encodeRecipeURL + '">';
             secondDiv.appendChild(hatebuAnchor);
-            
+
             link.parentElement.parentElement.parentElement.appendChild(secondDiv);
 
             //descriptionを作成する
@@ -322,7 +345,16 @@
         iframe.src = this.href;
     }
 
-    linkeventFook();
+    function initGCookpad() {
+        //ブックマーク取得
+        chrome.extension.sendRequest({
+            "action" : "getAllBookmarks"
+        }, function(data) {
+            bookmarks = data;
+            linkeventFook();
+        });
+    }
+    
 
     //インスタント検索対策としてナビゲーションのクリックを横取りする
     var navLinks = doc.querySelectorAll('#nav a');
@@ -334,5 +366,7 @@
         event.preventDefault();
         location.href = this.href;
     }
+    
+    initGCookpad();
 
 })(window);
