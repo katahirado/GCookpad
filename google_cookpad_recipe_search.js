@@ -8,9 +8,11 @@
     var doc = win.document;
     win.addEventListener("scroll", scrollHandler);
     win.addEventListener("resize", resizeHandler);
+    //AutoPagerize,AutoPatchWorkのイベントリスナーを登録
     doc.body.addEventListener('AutoPagerize_DOMNodeInserted', moveIframe, false);
     doc.body.addEventListener('AutoPatchWork.DOMNodeInserted', moveIframe, false);
 
+    //iframeの位置を調整
     function scrollHandler(event) {
         if(firstTop + 30 > win.scrollY && iframe.style.position == "fixed") {
             iframe.style.top = firstTop + "px";
@@ -21,6 +23,7 @@
         }
     }
 
+    //iFrameの表示幅をリサイズに追従
     function resizeHandler(event) {
         var sr = doc.getElementById("center_col");
         var tpw = sr.offsetWidth + parseInt(sr.style.marginRight);
