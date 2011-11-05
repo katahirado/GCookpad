@@ -39,7 +39,7 @@
         <input type="checkbox" id="chkbox2" value="1"/>
         1位
         <br/>
-        <a href="http://katahirado.jp/soft.html">GCOOKPAD by katahirado</a>
+        <a href="http://katahirado.jp/soft.html" target="_blank">GCOOKPAD by katahirado</a>
         <script>
             (function(win) {
                 var doc = win.document;
@@ -47,16 +47,6 @@
                 var cookpad = "+site%3Acookpad.com";
                 var popular = "人気検索";
                 var numOne = "1位";
-                var anchors = doc.getElementsByTagName("a");
-                for(var i = 0, len = anchors.length; i < len; i++) {
-                    var anchor = anchors[i];
-                    anchor.addEventListener("click", function(event) {
-                        chrome.tabs.create({
-                            url : this.href
-                        });
-                        return false;
-                    }, false);
-                }
                 var keyword = doc.getElementById("keyword");
                 keyword.focus();
                 keyword.addEventListener("keydown", function(event) {
