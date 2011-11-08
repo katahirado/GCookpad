@@ -8,7 +8,7 @@
         <script>
             (function() {
                 var folders = [];
-                var bookmarks=[];
+                var bookmarks = [];
                 //ブックマークツリー全体を取得し、平滑化してcontentscriptに返す
                 function getAllBookmarks(callback) {
                     chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
@@ -17,7 +17,7 @@
                         callback(bookmarks);
                     });
                 }
-                
+
                 //再帰的にブックマークツリーをたどり、ブックマークのみを抽出する
                 function findBookmark(bookmarkNodes) {
                     for(var i = 0, len = bookmarkNodes.length; i < len; i++) {
@@ -26,12 +26,12 @@
                             if(bookmarkTreeNode.children) {
                                 findBookmark(bookmarkTreeNode.children);
                             }
-                        }else {
+                        } else {
                             bookmarks.push(bookmarkTreeNode);
                         }
                     }
                 }
-                
+
                 //ブックマークツリー全体を取得し、フォルダーのみをcontentscriptに返す
                 function getAllBookmarkFolders(callback) {
                     chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
@@ -107,6 +107,26 @@
                     xhr.send(null);
                 }
 
+                function getFacebookLikeCount(recipeURL, spanPosition, callback) {
+                    //モバれぴ対応
+                    if(recipeURL.indexOf("http://m.cookpad.com") != -1) {
+                        recipeURL = recipeURL.replace("http://m.cookpad.com", "http://cookpad.com");
+                    }
+                    var xhr = new XMLHttpRequest();
+                    var requestURL = "http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls=" + encodeURIComponent(recipeURL);
+                    xhr.onload = function() {
+                        //total Countを抜き出す
+                        var responseJson = JSON.parse(xhr.responseText);
+                        var result = {
+                            'likeCount' : responseJson[0].total_count,
+                            'spanPosition' : spanPosition
+                        };
+                        callback(result);
+                    }
+                    xhr.open('GET', requestURL, true);
+                    xhr.send(null);
+                }
+
                 //呼び出しメソッドの振り分け
                 function onRequest(request, sender, callback) {
                     switch(request.action) {
@@ -121,6 +141,9 @@
                             break;
                         case "getCookpadTsukurepo":
                             getCookpadTsukurepo(request.recipeURL, request.spanPosition, callback);
+                            break;
+                        case "getFacebookLikeCount":
+                            getFacebookLikeCount(request.recipeURL, request.spanPosition, callback);
                             break;
                     }
                 }

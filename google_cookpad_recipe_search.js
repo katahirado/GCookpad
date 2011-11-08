@@ -42,7 +42,7 @@
 
     //bookmark一覧を保持する
     var bookmarks = [];
-    
+
     //bookmark登録用UIを用意
     var bookmarkWin = doc.createElement('div');
     bookmarkWin.id = "bookmark_modal";
@@ -120,12 +120,12 @@
         }, function(data) {
             bookmarks.push(data);
             //urlで走査して✓を追加する
-            var xpathString='//a[@class="bookmarkLink" and @href="'+data.url+'"]';
-            var bookmarkLinks=doc.evaluate(xpathString,doc.body,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null);
-            for (var i=0,len=bookmarkLinks.snapshotLength; i < len; i++) {
-                var bmLink=bookmarkLinks.snapshotItem(i);
-                if(bmLink.nextSibling.nodeValue!="✓"){
-                    bmLink.parentElement.insertBefore(doc.createTextNode("✓"),bmLink.nextSibling);
+            var xpathString = '//a[@class="bookmarkLink" and @href="' + data.url + '"]';
+            var bookmarkLinks = doc.evaluate(xpathString, doc.body, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+            for(var i = 0, len = bookmarkLinks.snapshotLength; i < len; i++) {
+                var bmLink = bookmarkLinks.snapshotItem(i);
+                if(bmLink.nextSibling.nodeValue != "✓") {
+                    bmLink.parentElement.insertBefore(doc.createTextNode("✓"), bmLink.nextSibling);
                 };
             };
             overlayErase();
@@ -248,7 +248,7 @@
             //bookmarkリンク作成
             var bmAnchor = doc.createElement('a');
             bmAnchor.innerText = "ブックマーク";
-            bmAnchor.className="bookmarkLink";
+            bmAnchor.className = "bookmarkLink";
             bmAnchor.href = link.href;
             bmAnchor.title = link.innerText;
             bmAnchor.style.marginLeft = "5px";
@@ -263,23 +263,11 @@
                 //ブックマーク済みなら✓をつける
                 secondDiv.appendChild(checkMarkString);
             }
+            //つくれぽ件数
             var tsukurepoSpan = doc.createElement('span');
             tsukurepoSpan.id = "tsukurepoSpan" + i;
             tsukurepoSpan.style.marginLeft = "5px";
             secondDiv.appendChild(tsukurepoSpan);
-            //つくれぽ件数を取得する
-            var recipeMatch = link.href.match(/cookpad.com\/recipe/);
-            if(recipeMatch) {
-                chrome.extension.sendRequest({
-                    "action" : "getCookpadTsukurepo",
-                    "recipeURL" : link.href,
-                    "spanPosition" : i
-                }, function(response) {
-                    //つくれぽ件数表示用span
-                    var span = doc.getElementById('tsukurepoSpan' + response.spanPosition);
-                    span.innerHTML = "つくれぽ<em>" + response.count + "</em>件<em>" + response.uuCount + "</em>";
-                });
-            }
             //はてぶ
             var hatebuAnchor = doc.createElement('a');
             hatebuAnchor.style.marginLeft = '5px';
@@ -290,11 +278,47 @@
 
             link.parentElement.parentElement.parentElement.appendChild(secondDiv);
 
+            //Facebookのいいね
+            var fbLike = doc.createElement('span');
+            fbLike.id = "fbLikeSpan" + i;
+            fbLike.style.marginLeft = '5px';
+            secondDiv.appendChild(fbLike);
+
             //descriptionを作成する
             var description = link.parentElement.parentElement.querySelector('.st').innerHTML;
             var descriptionDiv = doc.createElement('div');
+            descriptionDiv.style.marginTop = '5px';
             descriptionDiv.innerHTML = description;
             link.parentElement.parentElement.parentElement.appendChild(descriptionDiv);
+
+            //非同期でつくれぽ件数とFacebbokのいいねを取得する
+            var recipeMatch = link.href.match(/cookpad.com\/recipe/);
+            if(recipeMatch) {
+                //つくれぽ件数、人数
+                chrome.extension.sendRequest({
+                    "action" : "getCookpadTsukurepo",
+                    "recipeURL" : link.href,
+                    "spanPosition" : i
+                }, function(response) {
+                    //つくれぽ件数表示用span
+                    var span = doc.getElementById('tsukurepoSpan' + response.spanPosition);
+                    span.innerHTML = "つくれぽ<em>" + response.count + "</em>件<em>" + response.uuCount + "</em>";
+                });
+                //facebookのいいね件数を取得
+                chrome.extension.sendRequest({
+                    "action" : "getFacebookLikeCount",
+                    "recipeURL" : link.href,
+                    "spanPosition" : i
+                }, function(response) {
+                    //いいね表示用span
+                    var span = doc.getElementById('fbLikeSpan' + response.spanPosition);
+                    if(response.likeCount === 0) {
+                        span.style.display = "none";
+                    }else {
+                        span.innerHTML = "<em>"+response.likeCount+"</em>人が「いいね!」";
+                    }
+                });
+            } 
 
         }
         startIndex = links.length;
@@ -357,7 +381,6 @@
             linkeventFook();
         });
     }
-    
 
     //インスタント検索対策としてナビゲーションのクリックを横取りする
     var navLinks = doc.querySelectorAll('#nav a');
@@ -369,7 +392,7 @@
         event.preventDefault();
         location.href = this.href;
     }
-    
+
     initGCookpad();
 
 })(window);
