@@ -1,6 +1,6 @@
 (function(win) {
     //site:cookpad.comで絞り込んだ場合のみ反映させる
-    var match = location.search.match(/&?q=.*(site(%3A|:)cookpad.com)/);
+    var match = location.search.match(/site(%3A|:)cookpad.com/);
     if(!match) {
         return;
     }
