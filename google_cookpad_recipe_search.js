@@ -192,9 +192,13 @@
     if(numStats) {
         numStats.style.display = "none";
     }
-    var gpqff=doc.getElementById("gbqff");
+    var gbqff=doc.getElementById("gbqff");
     if(gbqff) {
         gbqff.style.display="none";
+    }
+    var gbqfbw=doc.getElementById("gbqfbw");
+    if(gbqfbw){
+        gbqfbw.style.display="none";
     }
     //検索件数を取得
     var searchCount = numStats.firstChild.data;
@@ -208,7 +212,7 @@
     newSearchElement.innerHTML = '<span style="font-size:1.5em">' + searchWord + '</span><span style="font-size:1.2em">の検索結果 </span><span style="font-size:1.5em">' + searchCount + '</span>';
     var gbqf=doc.getElementById('gbqf');
     gbqf.insertBefore(newSearchElement,gbqf.firstChild);
-    newSearchElement.style.position = "absolute";
+    // newSearchElement.style.position = "absolute";
     newSearchElement.style.left = searchWordStartX + "px";
     newSearchElement.style.top = 0;
 
