@@ -92,10 +92,14 @@
       var recipePage = xhr.responseText;
       var tsukurepoMatch = recipePage.match(/<span class=["']tsukurepo_count["']>([\s\S]?[0-9]{1,}[\s\S]?)<\/span>/);
       var tsukurepoUUMatch = recipePage.match(/<span class=["']tsukurepo_uu_count["']>([\s\S]*?)<\/span>/);
+      var uuCount="";
       if (tsukurepoMatch) {
+        if(tsukurepoUUMatch[1]){
+         uuCount=tsukurepoUUMatch[1].replace(/\r?\n/g,"");
+        }
         var result = {
           'count' : tsukurepoMatch[1],
-          'uuCount' : tsukurepoUUMatch[1],
+          'uuCount' : uuCount,
           'spanPosition' : spanPosition
         };
         callback(result);
