@@ -202,6 +202,10 @@
   if (gbqfbw) {
     gbqfbw.style.display = "none";
   }
+  var gbqfb = doc.getElementById("gbqfb");
+  if(gbqfb){
+    gbqfb.style.display= "none";
+  }
   //検索件数を取得
   var searchCount = numStats.firstChild.data;
   //検索ワード、件数などの表示位置を取得する
