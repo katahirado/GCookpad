@@ -90,7 +90,7 @@
     xhr.onload = function () {
       //つくれぽ件数を抜き出す
       var recipePage = xhr.responseText;
-      var tsukurepoMatch = recipePage.match(/<span class=["']tsukurepo_count["']>([\s\S]?[0-9]{1,}[\s\S]?)<\/span>/);
+      var tsukurepoMatch = recipePage.match(/<span class=["']tsukurepo_count["']>([\s\S]?[0-9,]{1,}[\s\S]?)<\/span>/);
       var tsukurepoUUMatch = recipePage.match(/<span class=["']tsukurepo_uu_count["']>([\s\S]*?)<\/span>/);
       var uuCount="";
       if (tsukurepoMatch) {
