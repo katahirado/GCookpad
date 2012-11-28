@@ -143,7 +143,9 @@
   //左側のナビゲーションエレメント
   var leftnav = doc.getElementById("leftnav");
   //非表示にする
-  leftnav.style.display = "none";
+  if (leftnav){
+    leftnav.style.display = "none";
+  }
   //検索結果表示位置、幅調整
   var searchResult = doc.getElementById("center_col");
   searchResult.style.marginLeft = "0px";
