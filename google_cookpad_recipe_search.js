@@ -169,7 +169,7 @@
   iframe.style.left = (searchResult.offsetWidth + 10) + "px";
   iframe.height = pageHeight + "px";
   iframe.frameBorder = 0;
-  main.appendChild(iframe);
+  doc.body.appendChild(iframe);
   //広告
   var adsense = doc.getElementById("rhs");
   if (adsense) {
@@ -310,6 +310,7 @@
 
       var recipeMatch = link.href.match(/cookpad.com\/recipe/);
       if (recipeMatch) {
+        link.parentElement.parentElement.parentElement.style.outline = "1px solid #0000FF";
         var recipeURL = cookpadRecipeURL(link.href);
         //Facebookのlike boxを生成
         var fSpan = doc.createElement('span');
