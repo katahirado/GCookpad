@@ -139,7 +139,9 @@
   //プレビューのスタート位置を保持する
   var vspibStartIndex = 0;
   //初期トップ位置
-  var firstTop = doc.getElementById("rcnt").offsetTop;
+  var main = doc.getElementById('main');
+  var rcnt = doc.getElementById("rcnt");
+  var firstTop = main.offsetTop+rcnt.offsetTop;
   //左側のナビゲーションエレメント
   var leftnav = doc.getElementById("leftnav");
   //非表示にする
@@ -167,7 +169,7 @@
   iframe.style.left = (searchResult.offsetWidth + 10) + "px";
   iframe.height = pageHeight + "px";
   iframe.frameBorder = 0;
-  doc.body.appendChild(iframe);
+  main.appendChild(iframe);
   //広告
   var adsense = doc.getElementById("rhs");
   if (adsense) {
