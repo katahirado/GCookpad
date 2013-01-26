@@ -82,20 +82,16 @@
   }
 
   function getCookpadTsukurepo(recipeURL, spanPosition, callback) {
-    //モバれぴ対応
-    if (recipeURL.indexOf("http://m.cookpad.com") != -1) {
-      recipeURL = recipeURL.replace("http://m.cookpad.com", "http://cookpad.com");
-    }
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
       //つくれぽ件数を抜き出す
       var recipePage = xhr.responseText;
       var tsukurepoMatch = recipePage.match(/<span class=["']tsukurepo_count["']>([\s\S]?[0-9,]{1,}[\s\S]?)<\/span>/);
       var tsukurepoUUMatch = recipePage.match(/<span class=["']tsukurepo_uu_count["']>([\s\S]*?)<\/span>/);
-      var uuCount="";
+      var uuCount = "";
       if (tsukurepoMatch) {
-        if(tsukurepoUUMatch[1]){
-         uuCount=tsukurepoUUMatch[1].replace(/\r?\n/g,"");
+        if (tsukurepoUUMatch[1]) {
+          uuCount = tsukurepoUUMatch[1].replace(/\r?\n/g, "");
         }
         var result = {
           'count' : tsukurepoMatch[1],
@@ -106,26 +102,6 @@
       }
     }
     xhr.open('GET', recipeURL, true);
-    xhr.send(null);
-  }
-
-  function getFacebookLikeCount(recipeURL, spanPosition, callback) {
-    //モバれぴ対応
-    if (recipeURL.indexOf("http://m.cookpad.com") != -1) {
-      recipeURL = recipeURL.replace("http://m.cookpad.com", "http://cookpad.com");
-    }
-    var xhr = new XMLHttpRequest();
-    var requestURL = "http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls=" + encodeURIComponent(recipeURL);
-    xhr.onload = function () {
-      //total Countを抜き出す
-      var responseJson = JSON.parse(xhr.responseText);
-      var result = {
-        'likeCount' : responseJson[0].total_count,
-        'spanPosition' : spanPosition
-      };
-      callback(result);
-    }
-    xhr.open('GET', requestURL, true);
     xhr.send(null);
   }
 
@@ -143,9 +119,6 @@
         break;
       case "getCookpadTsukurepo":
         getCookpadTsukurepo(request.recipeURL, request.spanPosition, callback);
-        break;
-      case "getFacebookLikeCount":
-        getFacebookLikeCount(request.recipeURL, request.spanPosition, callback);
         break;
     }
   }

@@ -143,7 +143,7 @@
   //左側のナビゲーションエレメント
   var leftnav = doc.getElementById("leftnav");
   //非表示にする
-  if (leftnav){
+  if (leftnav) {
     leftnav.style.display = "none";
   }
   //検索結果表示位置、幅調整
@@ -205,8 +205,8 @@
     gbqfbw.style.display = "none";
   }
   var gbqfb = doc.getElementById("gbqfb");
-  if(gbqfb){
-    gbqfb.style.display= "none";
+  if (gbqfb) {
+    gbqfb.style.display = "none";
   }
   //検索件数を取得
   var searchCount = numStats.firstChild.data;
@@ -218,16 +218,16 @@
   searchWordStartX = getAbsoluteX(elem);
   var newSearchElement = doc.createElement('div');
   var span1 = doc.createElement('span');
-  span1.style.fontSize="1.5em";
-  span1.innerText=searchWord;
+  span1.style.fontSize = "1.5em";
+  span1.innerText = searchWord;
   newSearchElement.appendChild(span1);
   var span2 = doc.createElement('span');
-  span2.style.fontSize="1.2em";
-  span2.innerText="の検索結果";
+  span2.style.fontSize = "1.2em";
+  span2.innerText = "の検索結果";
   newSearchElement.appendChild(span2);
   var span3 = doc.createElement('span');
-  span3.style.fontSize="1.5em";
-  span3.innerText=searchCount;
+  span3.style.fontSize = "1.5em";
+  span3.innerText = searchCount;
   newSearchElement.appendChild(span3);
   var gbqf = doc.getElementById('gbqf');
   gbqf.insertBefore(newSearchElement, gbqf.firstChild);
@@ -302,32 +302,25 @@
       var encodeRecipeURL = link.href.replace(/#/, '%23');
       hatebuAnchor.href = 'http://b.hatena.ne.jp/entry/' + encodeRecipeURL;
       var img = doc.createElement('img');
-      img.src="http://b.hatena.ne.jp/entry/image/"+encodeRecipeURL;
+      img.src = "http://b.hatena.ne.jp/entry/image/" + encodeRecipeURL;
       hatebuAnchor.appendChild(img);
       secondDiv.appendChild(hatebuAnchor);
 
-      link.parentElement.parentElement.parentElement.appendChild(secondDiv);
-
-      //Facebookのいいね
-      var fbLike = doc.createElement('span');
-      fbLike.id = "fbLikeSpan" + i;
-      fbLike.style.marginLeft = '5px';
-      secondDiv.appendChild(fbLike);
-
-      //descriptionを作成する
-      var description = link.parentElement.parentElement.querySelector('.st').innerHTML;
-      var descriptionDiv = doc.createElement('div');
-      descriptionDiv.style.marginTop = '5px';
-      descriptionDiv.innerHTML = description;
-      link.parentElement.parentElement.parentElement.appendChild(descriptionDiv);
-
-      //非同期でつくれぽ件数とFacebookのいいねを取得する
       var recipeMatch = link.href.match(/cookpad.com\/recipe/);
       if (recipeMatch) {
+        var recipeURL = cookpadRecipeURL(link.href);
+        //Facebookのlike boxを生成
+        var fSpan = doc.createElement('span');
+        fSpan.style.marginLeft = '5px';
+        fSpan.innerHTML = '<iframe src="https://www.facebook.com/plugins/like.php?href=' + encodeURIComponent(recipeURL) +
+          '&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;font&amp;colorscheme=light&amp;action=like&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:150px; height:21px;" allowTransparency="true"></iframe>';
+        secondDiv.appendChild(fSpan);
+
+        //非同期でつくれぽ件数を取得する
         //つくれぽ件数、人数
         chrome.extension.sendRequest({
           "action" : "getCookpadTsukurepo",
-          "recipeURL" : link.href,
+          "recipeURL" : recipeURL,
           "spanPosition" : i
         }, function (response) {
           //つくれぽ件数表示用span
@@ -336,36 +329,25 @@
           var textNode1 = doc.createTextNode("つくれぽ");
           frag.appendChild(textNode1);
           var em1 = doc.createElement("em");
-          em1.innerText=response.count;
+          em1.innerText = response.count;
           frag.appendChild(em1);
           var textNode2 = doc.createTextNode("件");
           frag.appendChild(textNode2);
           var em2 = doc.createElement("em");
-          em2.innerText=response.uuCount;
+          em2.innerText = response.uuCount;
           frag.appendChild(em2);
           span.appendChild(frag);
         });
-        //facebookのいいね件数を取得
-        chrome.extension.sendRequest({
-          "action" : "getFacebookLikeCount",
-          "recipeURL" : link.href,
-          "spanPosition" : i
-        }, function (response) {
-          //いいね表示用span
-          var span = doc.getElementById('fbLikeSpan' + response.spanPosition);
-          if (response.likeCount === 0) {
-            span.style.display = "none";
-          } else {
-            var frag = doc.createDocumentFragment();
-            var em = doc.createElement("em");
-            em.innerText=response.likeCount;
-            frag.appendChild(em);
-            var textNode = doc.createTextNode("人が「いいね!」");
-            frag.appendChild(textNode);
-            span.appendChild(frag);
-          }
-        });
       }
+
+      link.parentElement.parentElement.parentElement.appendChild(secondDiv);
+
+      //descriptionを作成する
+      var description = link.parentElement.parentElement.querySelector('.st').innerHTML;
+      var descriptionDiv = doc.createElement('div');
+      descriptionDiv.style.marginTop = '5px';
+      descriptionDiv.innerHTML = description;
+      link.parentElement.parentElement.parentElement.appendChild(descriptionDiv);
 
     }
     startIndex = links.length;
@@ -403,6 +385,15 @@
         folderSelect.appendChild(opt);
       }
     });
+  }
+
+  //モバれぴ対応
+  function cookpadRecipeURL(url) {
+    var recipeURL = url;
+    if (url.indexOf("http://m.cookpad.com") != -1) {
+      recipeURL = url.replace("http://m.cookpad.com", "http://cookpad.com");
+    }
+    return recipeURL;
   }
 
   function makeNestTitle(node) {
