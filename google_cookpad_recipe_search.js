@@ -214,7 +214,7 @@
   var searchCount = numStats.firstChild.data;
   //検索ワード、件数などの表示位置を取得する
   var title = doc.title;
-  var searchWord = title.replace("site:cookpad.com", '').replace(" - Google 検索", '').replace("  ", " ", "g");
+  var searchWord = title.replace("site:cookpad.com", '').replace('"このレシピが登録"','').replace(" - Google 検索", '').replace("  ", " ", "g");
   var searchWordStartX = 0;
   var elem = doc.querySelector('.tsf-p table');
   searchWordStartX = getAbsoluteX(elem);
@@ -249,7 +249,7 @@
   }
 
   //検索結果のリンクを取得
-  function linkeventFook() {
+  function linkEventFook() {
     var links = doc.querySelectorAll('h3 > a.l');
     for (var i = 0 + startIndex, len = links.length; i < len; i++) {
       var link = links[i];
@@ -419,7 +419,7 @@
       "action" : "getAllBookmarks"
     }, function (data) {
       bookmarks = data;
-      linkeventFook();
+      linkEventFook();
     });
   }
 

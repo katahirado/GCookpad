@@ -2,6 +2,7 @@
   var doc = win.document;
   var googleURL = "http://www.google.co.jp/search?q=";
   var cookpad = "+site%3Acookpad.com";
+  var recipe = '+"このレシピが登録"'
   var popular = "人気検索";
   var numOne = "1位";
   var keyword = doc.getElementById("keyword");
@@ -22,7 +23,7 @@
     createGoogleTab();
   }, false);
   function createGoogleTab() {
-    var urlString = googleURL + encodeURI(keyword.value) + cookpad;
+    var urlString = googleURL + encodeURI(keyword.value) + cookpad + recipe;
     if (doc.getElementById("chkbox").checked) {
       urlString += '+' + encodeURI(popular);
     }
