@@ -310,7 +310,7 @@
 
       var recipeMatch = link.href.match(/cookpad.com\/recipe\//);
       if (recipeMatch) {
-        link.parentElement.parentElement.parentElement.style.outline = "1px solid #0000FF";
+        //link.parentElement.parentElement.parentElement.style.outline = "1px solid #0000FF";
         var recipeURL = cookpadRecipeURL(link.href);
         //Facebookのlike boxを生成
         var fSpan = doc.createElement('span');
