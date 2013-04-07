@@ -6,37 +6,11 @@
   }
 
   var doc = win.document;
-  win.addEventListener("scroll", scrollHandler);
-  win.addEventListener("resize", resizeHandler);
   //AutoPagerize,AutoPatchWorkのイベントリスナーを登録
   doc.body.addEventListener('AutoPagerize_DOMNodeInserted', moveIframe, false);
   doc.body.addEventListener('AutoPatchWork.DOMNodeInserted', moveIframe, false);
 
-  //iframeの位置を調整
-  function scrollHandler(event) {
-    if (firstTop + 30 > win.scrollY && iframe.style.position == "fixed") {
-      iframe.style.top = firstTop + "px";
-      iframe.height = win.innerHeight - firstTop + "px";
-    } else if (iframe.style.position == "fixed") {
-      iframe.style.top = "0";
-      iframe.height = win.innerHeight + "px";
-    }
-  }
-
-  //iFrameの表示幅をリサイズに追従
-  function resizeHandler(event) {
-    var sr = doc.getElementById("center_col");
-    var tpw = sr.offsetWidth + parseInt(sr.style.marginRight);
-    if (win.innerWidth > tpw) {
-      iframe.width = win.innerWidth - sr.offsetWidth - 26;
-    } else {
-      iframe.width = 670;
-    }
-    iframe.height = sr.offsetHeight;
-  }
-
   function moveIframe() {
-    iframe.style.position = "fixed";
     initGCookpad();
   }
 
@@ -136,12 +110,6 @@
 
   //スタート位置を保持する
   var startIndex = 0;
-  //プレビューのスタート位置を保持する
-  var vspibStartIndex = 0;
-  //初期トップ位置
-  var main = doc.getElementById('main');
-  var rcnt = doc.getElementById("rcnt");
-  var firstTop = main.offsetTop+rcnt.offsetTop;
   //左側のナビゲーションエレメント
   var leftnav = doc.getElementById("leftnav");
   //非表示にする
@@ -152,24 +120,7 @@
   var searchResult = doc.getElementById("center_col");
   searchResult.style.marginLeft = "0px";
   searchResult.style.marginRight = "680px";
-  searchResult.style.minWidth = searchResult.offsetWidth + "px";
-  var twoPaneWidth = searchResult.offsetWidth + parseInt(searchResult.style.marginRight);
-  //検索結果の高さを記録
-  var pageHeight = searchResult.offsetHeight;
-  //検索結果脇にiframeを挿入
-  var iframe = doc.createElement('IFRAME');
-  iframe.style.position = "absolute";
-  iframe.style.right = "0";
-  iframe.style.top = firstTop + "px";
-  if (win.innerWidth > twoPaneWidth) {
-    iframe.width = win.innerWidth - searchResult.offsetWidth - 26;
-  } else {
-    iframe.width = 670;
-  }
-  iframe.style.left = (searchResult.offsetWidth + 10) + "px";
-  iframe.height = pageHeight + "px";
-  iframe.frameBorder = 0;
-  doc.body.appendChild(iframe);
+  searchResult.style.minWidth =  "680px";
   //広告
   var adsense = doc.getElementById("rhs");
   if (adsense) {
@@ -182,14 +133,6 @@
     bts.style.display = "none";
   }
   //上部の検索窓などを消す
-  var sftab = doc.getElementById("sftab");
-  if (sftab) {
-    sftab.style.display = "none";
-  }
-  var sblsbb = doc.getElementById("sblsbb");
-  if (sblsbb) {
-    sblsbb.style.display = "none";
-  }
   var sflas = doc.getElementById("sflas");
   if (sflas) {
     sflas.style.display = "none";
@@ -262,7 +205,6 @@
       var t = link.innerText;
       newLink.innerText = t;
       newLink.style.fontSize = "medium";
-      newLink.addEventListener('click', clickOpenIFrameHandler);
       link.parentElement.parentElement.parentElement.appendChild(newLink);
 
       //二段目のdivを作成
@@ -405,12 +347,6 @@
       s += "　";
     }
     return s + node.title;
-  }
-
-  //クリックイベントをキャンセルしてiframeのソースにhrefをセットする
-  function clickOpenIFrameHandler(event) {
-    event.preventDefault();
-    iframe.src = this.href;
   }
 
   function initGCookpad() {
