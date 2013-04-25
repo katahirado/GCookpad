@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "GCookpad",
-    "version": "0.8.8",
+    "version": "0.8.9",
     "description": "GCookpadは、クックパッド(COOKPAD)の人気レシピをGoogleでかんたんに検索できるツールです。",
     "icons": {
         "16": "cookpad_search_16.png",

@@ -193,7 +193,7 @@
 
   //検索結果のリンクを取得
   function linkEventFook() {
-    var links = doc.querySelectorAll('h3 > a.l');
+    var links = doc.querySelectorAll('h3.r > a');
     for (var i = 0 + startIndex, len = links.length; i < len; i++) {
       var link = links[i];
       //インスタント検索にもっていかれてページ遷移してしまうので、元の表示をすべて非表示にしてanchor,description等を作成する
